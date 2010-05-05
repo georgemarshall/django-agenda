@@ -70,8 +70,6 @@ class Event(models.Model):
 
     description = models.TextField(_('description'))
 
-    calendar = models.ForeignKey("Calendar", blank=True, null=True, related_name='events')
-
     # Extra fields
     add_date = models.DateTimeField(_('add date'),auto_now_add=True)
     mod_date = models.DateTimeField(_('modification date'), auto_now=True)
@@ -96,6 +94,8 @@ class Event(models.Model):
 
 class Calendar(models.Model):
     name = models.CharField(_('name'), max_length=100, blank=True, null=True)
+
+    events = models.ManyToManyField(Event, related_name='calendars', blank=True, null=True)
 
     def __unicode__(self):
         if self.name:
