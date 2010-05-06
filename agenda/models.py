@@ -32,10 +32,39 @@ class PublicationManager(CurrentSiteManager):
     def get_query_set(self):
         return super(CurrentSiteManager, self).get_query_set().filter(publish=True, publish_date__lte=datetime.now())
 
-class Event(models.Model):
+class EventManager(models.Manager):
+    def past_events(self):
+        return self.get_query_set().filter(event_date__lt=datetime.now())
+
+    def future_events(self):
+        """
+        Returns present and future events
+        """
+        return self.get_query_set().filter(event_date__gte=datetime.now())
+
+
+class AbstractEvent(models.Model):
     class Meta:
         verbose_name = _('event')
         verbose_name_plural = _('events')
+
+        abstract = True
+
+    # Custom managers
+    objects = EventManager()
+    on_site = CurrentSiteManager()
+    published = PublicationManager()
+
+    # Fields
+    event_date = models.DateField(_('date'))
+
+    publish_date = models.DateTimeField(_('publication date'), default=datetime.now())
+    publish = models.BooleanField(_('publish'), default=True)
+
+    sites = models.ManyToManyField(Site)
+
+class Event(AbstractEvent):
+    class Meta:
         ordering = ['-event_date', '-start_time', '-title']
         get_latest_by = 'event_date'
         permissions = (("change_author", ugettext("Change author")),)
@@ -44,7 +73,6 @@ class Event(models.Model):
     def __unicode__(self):
         return _("%(title)s on %(event_date)s") % { 'title'      : self.title,
                                                     'event_date' : self.event_date }
-
     @models.permalink                                               
     def get_absolute_url(self):
         return ('agenda-detail', (), {
@@ -53,15 +81,10 @@ class Event(models.Model):
                   'day'   : self.event_date.day, 
                   'slug'  : self.slug })
         
-    objects = models.Manager()
-    on_site = CurrentSiteManager()
-    published = PublicationManager()
-
     # Core fields
     title = models.CharField(_('title'), max_length=255)
     slug = models.SlugField(_('slug'), db_index=True)
-    
-    event_date = models.DateField(_('date'))
+
     
     start_time = models.TimeField(_('start time'), blank=True, null=True)
     end_time = models.TimeField(_('end time'), blank=True, null=True)
@@ -71,17 +94,13 @@ class Event(models.Model):
     description = models.TextField(_('description'))
 
     # Extra fields
-    add_date = models.DateTimeField(_('add date'),auto_now_add=True)
+    add_date = models.DateTimeField(_('add date'), auto_now_add=True)
     mod_date = models.DateTimeField(_('modification date'), auto_now=True)
     
     author = models.ForeignKey(User, verbose_name=_('author'), db_index=True, blank=True, null=True)
-
-    publish_date = models.DateTimeField(_('publication date'), default=datetime.now())
-    publish = models.BooleanField(_('publish'), default=True)
     
     allow_comments = models.BooleanField(_('Allow comments'), default=True)
 
-    sites = models.ManyToManyField(Site)
     
     def save(self):
         super(Event, self).save()
