@@ -40,7 +40,7 @@ class EventManager(models.Manager):
         """
         Returns present and future events
         """
-        return self.get_query_set().filter(event_date__gte=datetime.now())
+        return self.get_query_set().filter(event_date__gte=datetime.now()).order_by('event_date', 'start_time')
 
 
 class AbstractEvent(models.Model):
