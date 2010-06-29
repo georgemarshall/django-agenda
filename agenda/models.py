@@ -64,6 +64,12 @@ class AbstractEvent(models.Model):
     sites = models.ManyToManyField(Site)
 
 class Event(AbstractEvent):
+    STATE_CHOICES = (
+        ('V', _('Valid')),
+        ('C', _('Canceled')),
+        ('P', _('Postponed')),
+        )
+
     class Meta:
         ordering = ['-event_date', '-start_time', '-title']
         get_latest_by = 'event_date'
@@ -75,13 +81,14 @@ class Event(AbstractEvent):
                                                     'event_date' : self.event_date }
     @models.permalink                                               
     def get_absolute_url(self):
-        return ('agenda-detail', (), {
-                  'year'  : self.event_date.year, 
-                  'month' : self.event_date.month, 
-                  'day'   : self.event_date.day, 
-                  'slug'  : self.slug })
+        return ('agenda-detail', (), {'year'  : self.event_date.year, 
+                                      'month' : self.event_date.month, 
+                                      'day'   : self.event_date.day, 
+                                      'slug'  : self.slug }
+                )
         
     # Core fields
+    state = models.CharField(_('state'), max_length=1, default='V', choices=STATE_CHOICES)
     title = models.CharField(_('title'), max_length=255)
     slug = models.SlugField(_('slug'), db_index=True)
 
