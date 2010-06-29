@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-def timeline(request, model, calendar, template_name):
+def timeline(request, model, calendar, template_name, extra_context={}):
     """
     Displays a timeline with past and future events of a given queryset
     """
@@ -14,7 +14,8 @@ def timeline(request, model, calendar, template_name):
     return render_to_response(template_name=template_name,
                               dictionary={'past_events': past_events,
                                           'future_events': future_events},
-                              context_instance=RequestContext(request),
+                              context_instance=RequestContext(request,
+                                                              extra_context),
                               )
 
 
