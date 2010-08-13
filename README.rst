@@ -6,7 +6,7 @@ What is it?
 ===========
 The django-agenda app is a generic
 implementation of a web-based calendar
-with events.
+with events for Django 1.0+ (currently used on 1.2).
 
 Status
 ======
@@ -19,11 +19,10 @@ Feautures
 =========
 Current
 ---------
-- Full post-1.0 support, currently used on Django 1.2.
 - Kind admin interface with automatic author assignment (Django User).
 - More elegant date_based generic view implementation. Finally you get all the info a decent archive will require. 
-- Demo project with very basic templates.
 - Event archive.
+- Event state (Canceled, Valid, Postponed)
 - Browseable calendar based on Python's calendar module.
 - django.contrib.comments support
 - django.contrib.sites support (with default value in admin)
@@ -31,6 +30,8 @@ Current
 - Sitemaps.
 - Fully localizable; all strings are translatable.
 - vCard iCalendar export, timezone aware and all!
+
+- Demo project with very basic templates.
 
 Future
 ------
@@ -45,8 +46,6 @@ Models
 
 Requirements
 ============
-All requirements are currently included in the "deps" directory.
-- django-logging
 - vobject
 
 License
