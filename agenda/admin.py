@@ -2,14 +2,7 @@ from django.contrib import admin
 
 from django.utils.translation import ugettext as _
 
-from models import *
-
-class LocationAdmin(admin.ModelAdmin):
-    list_display = ('title', )
-    
-    prepopulated_fields = {"slug": ("title",)}
-    
-admin.site.register(Location, LocationAdmin)
+from .models import Event, Calendar
 
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'event_date', 'start_time', 'location', 'publish')

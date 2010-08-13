@@ -19,7 +19,7 @@ Feautures
 =========
 Current
 ---------
-- Full post-1.0 support, currently used on Django trunk.
+- Full post-1.0 support, currently used on Django 1.2.
 - Kind admin interface with automatic author assignment (Django User).
 - More elegant date_based generic view implementation. Finally you get all the info a decent archive will require. 
 - Demo project with very basic templates.

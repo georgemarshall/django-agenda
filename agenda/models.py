@@ -14,19 +14,6 @@ from django.contrib.sites.managers import CurrentSiteManager
 
 from django.contrib.sitemaps import ping_google
 
-class Location(models.Model):
-    class Meta:
-        verbose_name = _('location')
-        verbose_name_plural = _('locations')
-        ordering = ('title',)
-    
-    def __unicode__(self):
-        return self.title
-        
-    title = models.CharField(_('title'), max_length=255)
-    slug = models.SlugField(_('slug'), db_index=True)
-    
-    address = models.CharField(_('address'), max_length=255, blank=True)
 
 class PublicationManager(CurrentSiteManager):
     def get_query_set(self):
@@ -96,8 +83,6 @@ class Event(AbstractEvent):
     start_time = models.TimeField(_('start time'), blank=True, null=True)
     end_time = models.TimeField(_('end time'), blank=True, null=True)
     
-    location = models.ForeignKey(Location, blank=True, null=True)
-
     description = models.TextField(_('description'))
 
     # Extra fields
