@@ -1,7 +1,3 @@
-*.o
 *.pyc
-.DS_Store
-*.sqlite
-*.sw?
-demo/media
+*.db
 
