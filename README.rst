@@ -40,12 +40,9 @@ Future
 - User contributed events.
 - Repeated events
 
-Models
-======
-.. image:: graph_models.png
-
 Requirements
 ============
+- python-dateutil
 - vobject
 
 License
