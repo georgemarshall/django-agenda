@@ -1,0 +1,29 @@
+.calendar {
+	 width: 1024px;
+}
+
+.calendar-header {
+	width: 100%;
+}
+
+.calendar-day {
+	float: left;
+	width: 136px;
+	height: 70px;
+	margin-right: 2px;
+	margin-bottom: 2px;
+	padding: 2px;
+	border: 1px solid;
+	-webkit-border-top-left-radius: 10px;
+	-webkit-border-top-right-radius: 10px;
+	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-topright: 10px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ccc));
+	background: -moz-linear-gradient(top,  #fff,  #ccc);
+}
+
+div.calendar .out-of-month{
+	background: white;
+}

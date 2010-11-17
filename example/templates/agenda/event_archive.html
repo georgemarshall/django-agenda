@@ -2,46 +2,41 @@
 {% load comments %}
 {% load agenda %}
 
+{% block htmlheader %}
+{{ block.super}}
+<link rel='stylesheet' type='text/css' href='/static/css/calendar.css' />
+{% endblock %}
+
 {% block content %}
 {% if month %}
     <div class="calendar">
         {% get_calendar for month.month month.year as calendar %}
-        <table>
-            <tr>
-                <th>
-                    {% if previous_month %} 
+        <div class="calendar-header">
+               {% if previous_month %} 
                         <a href="{% url agenda-archive-month previous_month.year previous_month.month %}">&lt;</a> 
                     {% else %} 
                         - 
                     {% endif %} 
-                </th>
-                <th colspan="5">
                     {{ month.month }}-{{ month.year }}
-                </th>
-                <th>
                     {% if next_month %} 
                         <a href="{% url agenda-archive-month next_month.year next_month.month %}">&gt;</a> 
                     {% else %} 
                         - 
                     {% endif %}
-                </th>
-            </tr>
+        </div>
         {% for week in calendar %}
-            <tr>
             {% for day in week %}
                 {% ifequal day.month month.month %}
                     {% ifdayin day days %} 
-                        <td style="background:gray;"><a href="{% url agenda-archive-day day.year day.month day.day %}">{{ day.day }}</a></td>
+                        <div class="calendar-day"><a href="{% url agenda-archive-day day.year day.month day.day %}">{{ day.day }}</a></div>
                     {% else %}
-                        <td style="background:gray;">{{ day.day }}</td>
+                        <div class="calendar-day" >{{ day.day }}</div>
                     {% endifdayin %}
                 {% else %}
-                    <td>{{ day.day }}</td>            
+                    <div class="out-of-month calendar-day" >{{ day.day }}</div>            
                 {% endifequal %}
             {% endfor %}
-            </tr>
         {% endfor %}
-        </table>
         <small><a href="{% url agenda-archive-year month.year %}">Year overview</a></small>
     </div>
 {% endif %}
