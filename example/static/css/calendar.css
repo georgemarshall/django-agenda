@@ -1,15 +1,21 @@
 .calendar {
 	 width: 1024px;
+	 float: left;
+	 margin-right: 5px;
+	 padding-left: 3px;
 }
 
 .calendar-header {
 	width: 100%;
+	text-align: center;
+	margin-bottom: 5px;
+
 }
 
 .calendar-day {
 	float: left;
-	width: 136px;
-	height: 70px;
+	width: 138px;
+	height: 80px;
 	margin-right: 2px;
 	margin-bottom: 2px;
 	padding: 2px;
@@ -26,4 +32,9 @@
 
 div.calendar .out-of-month{
 	background: white;
+}
+
+div.event, div.events {
+	width: 500px;
+	float: left;
 }

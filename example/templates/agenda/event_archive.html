@@ -8,18 +8,34 @@
 {% endblock %}
 
 {% block content %}
+
+<div class="header">
+{% if not month %}
+	<a href="{% url agenda-archive-year previous_year %}">{{ previous_year }}</a>
+	=> <big>{{ year }}</big> =>
+	<a href="{% url agenda-archive-year next_year %}">{{ next_year }}</a>
+	{% if months %}
+	    <ul>
+	    {% for month in months %}
+	        <li><a href="{% url agenda-archive-month month.year month.month %}">{{ month|date:"M Y"}}</a></li>
+	    {% endfor %}
+	    </ul>
+	{% endif %}
+{% endif %}
+</div>
+
 {% if month %}
     <div class="calendar">
         {% get_calendar for month.month month.year as calendar %}
         <div class="calendar-header">
                {% if previous_month %} 
-                        <a href="{% url agenda-archive-month previous_month.year previous_month.month %}">&lt;</a> 
+                        <a href="{% url agenda-archive-month previous_month.year previous_month.month %}">&lt;&lt;</a> 
                     {% else %} 
                         - 
                     {% endif %} 
-                    {{ month.month }}-{{ month.year }}
+                     &nbsp;&nbsp;&nbsp;<a href="{% url agenda-archive-month month.year month.month %}">{{ month|date:"M Y"}}</a> &nbsp;&nbsp;&nbsp;
                     {% if next_month %} 
-                        <a href="{% url agenda-archive-month next_month.year next_month.month %}">&gt;</a> 
+                        <a href="{% url agenda-archive-month next_month.year next_month.month %}">&gt;&gt;</a> 
                     {% else %} 
                         - 
                     {% endif %}
@@ -37,82 +53,61 @@
                 {% endifequal %}
             {% endfor %}
         {% endfor %}
-        <small><a href="{% url agenda-archive-year month.year %}">Year overview</a></small>
+        <small>
+        	<a href="{% url agenda-archive-year month.year %}">Year overview</a><br />
+       		<a href="{% url agenda-icalendar %}">Subscribe</a> to this calendar with iCal, Outlook, Google Calendar etc.
+       	</small>
     </div>
 {% endif %}
 
-<div class="header">
-{% if month %}
-        {% if day %}
-            <h1>{{ day|date:"D d M Y"}}</h1>
-        {% else %}
-            <h1>{{ month|date:"M Y"}}</h1>
-        {% endif %}
-    {% else %}
-        <a href="{% url agenda-archive-year previous_year %}">{{ previous_year }}</a>
-        <a href="{% url agenda-archive-year next_year %}">{{ next_year }}</a>
-        <h1>{{ year }}</h1>
-        {% if months %}
-            <ul>
-            {% for month in months %}
-                <li><a href="{% url agenda-archive-month month.year month.month %}">{{ month|date:"M Y"}}</a></li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-{% endif %}
+ {% if event %}
+<div class="event">
+	{% if next_event %}
+	<a href="{% url agenda-detail next_event.event_date.year next_event.event_date.month next_event.event_date.day next_event.slug %}">Next: {{ next_event }}</a> 
+	{% endif %} 
+	{% if previous_event %} 
+	<a href="{% url agenda-detail previous_event.event_date.year previous_event.event_date.month previous_event.event_date.day previous_event.slug %}">Previous: {{ previous_event }}</a> 
+	{% endif %}
+	<h1>Event: {{ event.slug }}</h1>
+	{% if event.start_time %}
+	    <div class="event_time">
+	        {{event.start_time|time:"G:i"}}
+	        {% if event.end_time %} - {{event.end_time|time:"G:i"}}{% endif %}
+	    </div>
+	{% endif %}
+	<div class="event_description">
+	    {{ event.description }}
+	</div>
+	{% if event.allow_comments %}
+	<div class="event_comments">
+	    {% get_comment_list for event as comment_list %}
+	
+	    {% if comment_list %}
+	        <h2>Comments</h2>
+	        {% for comment in comment_list %}
+	            {{ comment }}
+	        {% endfor %}
+	    {% endif %}
+	    <div class="event_comments_form">
+	        <h2>Leave comment</h2>
+	        {% render_comment_form for event %}
+	    </div>
+	</div>
+	{% endif %}
 </div>
+{% endif %}
 
 {% if event_list %}
     <div class="events">
-        <h1>Events</h1>
-        <table>
+        <big>Events</big>
+        <ul>
         {% for event in event_list %}
-            <tr>
-                <td><a href="{% url agenda-archive-day event.event_date.year event.event_date.month event.event_date.day %}">{{ event.event_date|date:"D d M"}}</a></td>
-                <td><a href="{% url agenda-detail event.event_date.year event.event_date.month event.event_date.day event.slug %}">{{ event.title }}</a></td>
-            </tr>
+                <li>
+                	<a href="{% url agenda-archive-day event.event_date.year event.event_date.month event.event_date.day %}">{{ event.event_date|date:"D d M"}}</a>
+                	<a href="{% url agenda-detail event.event_date.year event.event_date.month event.event_date.day event.slug %}">{{ event.title }}</a>
+                </li>
         {% endfor %}
-        </table>
+        </ul>
     </div>
 {% endif %}
-
-{% if event %}
-    <div class="event">
-        {% if next_event %}
-        <a href="{% url agenda-detail next_event.event_date.year next_event.event_date.month next_event.event_date.day next_event.slug %}">Next: {{ next_event }}</a> 
-        {% endif %} 
-        {% if previous_event %} 
-        <a href="{% url agenda-detail previous_event.event_date.year previous_event.event_date.month previous_event.event_date.day previous_event.slug %}">Previous: {{ previous_event }}</a> 
-        {% endif %}
-        <h1>Event: {{ event.slug }}</h1>
-        {% if event.start_time %}
-            <div class="event_time">
-
-                {{event.start_time|time:"G:i"}}
-                {% if event.end_time %} - {{event.end_time|time:"G:i"}}{% endif %}
-            </div>
-        {% endif %}
-        <div class="event_description">
-            {{ event.description }}
-        </div>
-        {% if event.allow_comments %}
-        <div class="event_comments">
-            {% get_comment_list for event as comment_list %}
-
-            {% if comment_list %}
-                <h2>Comments</h2>
-                {% for comment in comment_list %}
-                    {{ comment }}
-                {% endfor %}
-            {% endif %}
-            <div class="event_comments_form">
-                <h2>Leave comment</h2>
-                {% render_comment_form for event %}
-            </div>
-        </div>
-        {% endif %}
-    </div>
-{% endif %}
-
-<div class="subscribe"><a href="{% url agenda-icalendar %}">Subscribe</a> to this calendar with iCal, Outlook, Google Calendar etc.</div>
 {% endblock %}
