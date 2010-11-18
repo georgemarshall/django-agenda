@@ -18,7 +18,7 @@ class EventFeed(Feed):
         return reverse('agenda-index')
     
     def items(self):
-        return Event.published.filter(event_date__gte=datetime.now() - timedelta(days=1))
+        return Event.published.filter(begin_date__gte=datetime.now() - timedelta(days=1))
     
     def item_pubdate(self, item):
         return item.publish_date

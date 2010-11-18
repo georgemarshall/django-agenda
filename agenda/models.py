@@ -21,13 +21,13 @@ class PublicationManager(CurrentSiteManager):
 
 class EventManager(models.Manager):
     def past_events(self):
-        return self.get_query_set().filter(event_date__lt=datetime.now())
+        return self.get_query_set().filter(begin_date__lt=datetime.now())
 
     def future_events(self):
         """
         Returns present and future events
         """
-        return self.get_query_set().filter(event_date__gte=datetime.now()).order_by('event_date', 'start_time')
+        return self.get_query_set().filter(begin_date__gte=datetime.now()).order_by('begin_date', 'start_time')
 
 
 class AbstractEvent(models.Model):
@@ -43,7 +43,7 @@ class AbstractEvent(models.Model):
     published = PublicationManager()
 
     # Fields
-    event_date = models.DateField(_('date'))
+    begin_date = models.DateField(_('date'))
 
     publish_date = models.DateTimeField(_('publication date'), default=datetime.now())
     publish = models.BooleanField(_('publish'), default=True)
@@ -58,19 +58,19 @@ class Event(AbstractEvent):
         )
 
     class Meta:
-        ordering = ['-event_date', '-start_time', '-title']
-        get_latest_by = 'event_date'
+        ordering = ['-begin_date', '-start_time', '-title']
+        get_latest_by = 'begin_date'
         permissions = (("change_author", ugettext("Change author")),)
-        unique_together = ("event_date", "slug")
+        unique_together = ("begin_date", "slug")
 
     def __unicode__(self):
-        return _("%(title)s on %(event_date)s") % { 'title'      : self.title,
-                                                    'event_date' : self.event_date }
+        return _("%(title)s on %(begin_date)s") % { 'title'      : self.title,
+                                                    'begin_date' : self.begin_date }
     @models.permalink                                               
     def get_absolute_url(self):
-        return ('agenda-detail', (), {'year'  : self.event_date.year, 
-                                      'month' : self.event_date.month, 
-                                      'day'   : self.event_date.day, 
+        return ('agenda-detail', (), {'year'  : self.begin_date.year, 
+                                      'month' : self.begin_date.month, 
+                                      'day'   : self.begin_date.day, 
                                       'slug'  : self.slug }
                 )
         

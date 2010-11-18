@@ -5,7 +5,7 @@ from models import *
 
 info_dict = {
     'queryset'                  : Event.published.all(),
-    'date_field'                : 'event_date',
+    'date_field'                : 'begin_date',
     'template_object_name'      : 'event',
 }
 

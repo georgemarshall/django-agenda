@@ -63,10 +63,10 @@
  {% if event %}
 <div class="event">
 	{% if next_event %}
-	<a href="{% url agenda-detail next_event.event_date.year next_event.event_date.month next_event.event_date.day next_event.slug %}">Next: {{ next_event }}</a> 
+	<a href="{% url agenda-detail next_event.begin_date.year next_event.begin_date.month next_event.begin_date.day next_event.slug %}">Next: {{ next_event }}</a> 
 	{% endif %} 
 	{% if previous_event %} 
-	<a href="{% url agenda-detail previous_event.event_date.year previous_event.event_date.month previous_event.event_date.day previous_event.slug %}">Previous: {{ previous_event }}</a> 
+	<a href="{% url agenda-detail previous_event.begin_date.year previous_event.begin_date.month previous_event.begin_date.day previous_event.slug %}">Previous: {{ previous_event }}</a> 
 	{% endif %}
 	<h1>Event: {{ event.slug }}</h1>
 	{% if event.start_time %}
@@ -103,8 +103,8 @@
         <ul>
         {% for event in event_list %}
                 <li>
-                	<a href="{% url agenda-archive-day event.event_date.year event.event_date.month event.event_date.day %}">{{ event.event_date|date:"D d M"}}</a>
-                	<a href="{% url agenda-detail event.event_date.year event.event_date.month event.event_date.day event.slug %}">{{ event.title }}</a>
+                	<a href="{% url agenda-archive-day event.begin_date.year event.begin_date.month event.begin_date.day %}">{{ event.begin_date|date:"D d M"}}</a>
+                	<a href="{% url agenda-detail event.begin_date.year event.begin_date.month event.begin_date.day event.slug %}">{{ event.title }}</a>
                 </li>
         {% endfor %}
         </ul>

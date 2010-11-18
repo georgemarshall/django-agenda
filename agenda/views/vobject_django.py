@@ -14,7 +14,7 @@ def icalendar(request, queryset, date_field, ical_filename,
               mimetype=None, context_processors=None):
     
     now = datetime.now()      
-    queryset = queryset.filter(event_date__gte=now - timedelta(days=1))
+    queryset = queryset.filter(begin_date__gte=now - timedelta(days=1))
     
     cal = vobject.iCalendar()
     utc = vobject.icalendar.utc

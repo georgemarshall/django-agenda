@@ -6,17 +6,17 @@ from django.utils.translation import ugettext as _
 from .models import Event, Calendar
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'event_date', 'start_time', 'publish')
+    list_display = ('title', 'author', 'begin_date', 'start_time', 'publish')
     list_display_links = ('title', )
-    list_filter = ('event_date', 'publish', 'author')
+    list_filter = ('begin_date', 'publish', 'author')
 
-    date_hierarchy = 'event_date'
+    date_hierarchy = 'begin_date'
     
     prepopulated_fields = {"slug": ("title",)}
     
     search_fields = ('title', 'author__username', 'author__first_name', 'author__last_name', 'calendars')
 
-    fieldsets =  ((None, {'fields': ['title', 'slug', 'event_date', 'start_time', 'end_time', 'description']}),
+    fieldsets =  ((None, {'fields': ['title', 'slug', 'begin_date', 'start_time', 'end_time', 'description']}),
                   (_('Advanced options'), {'classes' : ('collapse',),
                                            'fields'  : ('publish_date', 'publish', 'sites', 'author', 'allow_comments')}))
     
