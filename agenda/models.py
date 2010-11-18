@@ -105,6 +105,13 @@ class Event(AbstractEvent):
 # ping_google can be called by a signal
 #post_save.connect(Event, ping_google)
 
+class MetaEvent(Event):
+    sub_events = models.ManyToManyField(Event, blank=True, null=True)
+    
+    class Meta:
+        verbose_name = _('meta event')
+        verbose_name_plural = _('meta events')
+
 class Calendar(models.Model):
     name = models.CharField(_('name'), max_length=100, blank=True, null=True)
 
