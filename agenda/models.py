@@ -44,6 +44,7 @@ class AbstractEvent(models.Model):
 
     # Fields
     begin_date = models.DateField(_('date'))
+    end_date = models.DateField(_('date'), null=True)
 
     publish_date = models.DateTimeField(_('publication date'), default=datetime.now())
     publish = models.BooleanField(_('publish'), default=True)
@@ -79,8 +80,9 @@ class Event(AbstractEvent):
     title = models.CharField(_('title'), max_length=255)
     slug = models.SlugField(_('slug'), db_index=True)
 
-    
+    #Relative to begin_date
     start_time = models.TimeField(_('start time'), blank=True, null=True)
+    #Relative to end_date
     end_time = models.TimeField(_('end time'), blank=True, null=True)
     
     description = models.TextField(_('description'))
