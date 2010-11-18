@@ -130,14 +130,14 @@ def object_detail(request, queryset, date_field,
 
     # Process parameters
     if not extra_context:
-      extra_context = {}
+        extra_context = {}
     if not template_name:
-      template_name = "%s/%s_archive.html" % (model._meta.app_label, model._meta.object_name.lower())
+        template_name = "%s/%s_archive.html" % (model._meta.app_label, model._meta.object_name.lower())
 
     # Get relevant context (objects and dates)
     objects, object_context = get_object_context(queryset, date_field, year, month, day, slug)
     if not objects:
-      raise Http404, "No %s available" % model._meta.verbose_name
+        raise Http404, "No %s available" % model._meta.verbose_name
 
     my_object = objects[0]
     object_context.update({ template_object_name : my_object,
