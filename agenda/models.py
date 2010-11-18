@@ -13,6 +13,7 @@ from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
 
 from django.contrib.sitemaps import ping_google
+from django.db.models.signals import post_save
 
 
 class PublicationManager(CurrentSiteManager):
@@ -95,15 +96,8 @@ class Event(AbstractEvent):
     
     allow_comments = models.BooleanField(_('Allow comments'), default=True)
 
-    
-    def save(self):
-        super(Event, self).save()
-        if not settings.DEBUG:
-            try:
-                ping_google()
-            except Exception:
-                import logging
-                logging.warn('Google ping on save did not work.')
+# ping_google can be called through a signal
+#post_save.connect(Event, ping_google)
 
 class Calendar(models.Model):
     name = models.CharField(_('name'), max_length=100, blank=True, null=True)
