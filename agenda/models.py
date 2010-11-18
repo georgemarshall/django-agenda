@@ -96,7 +96,13 @@ class Event(AbstractEvent):
     
     allow_comments = models.BooleanField(_('Allow comments'), default=True)
 
-# ping_google can be called through a signal
+    @property
+    def duration(self):
+        begin_datetime = datetime.combine(self.begin_date, self.start_time)
+        end_datetime = datetime.combine(self.end_date, self.end_time)
+        return end_datetime - begin_datetime
+    
+# ping_google can be called by a signal
 #post_save.connect(Event, ping_google)
 
 class Calendar(models.Model):
