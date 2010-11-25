@@ -106,7 +106,7 @@ class Event(AbstractEvent):
 #post_save.connect(Event, ping_google)
 
 class MetaEvent(Event):
-    sub_events = models.ManyToManyField(Event, blank=True, null=True)
+    sub_events = models.ManyToManyField(Event, related_name='meta_event', blank=True, null=True)
     
     class Meta:
         verbose_name = _('meta event')
