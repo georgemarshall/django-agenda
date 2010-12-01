@@ -97,12 +97,19 @@ class Event(AbstractEvent):
     allow_comments = models.BooleanField(_('Allow comments'), default=True)
 
     @property
+    def start_datetime(self):
+        return datetime.combine(self.begin_date, self.start_time)
+    
+    @property
+    def end_datetime(self):
+        return datetime.combine(self.end_date, self.end_time)
+    
+    @property
     def duration(self):
-        begin_datetime = datetime.combine(self.begin_date, self.start_time)
-        end_datetime = datetime.combine(self.end_date, self.end_time)
-        return end_datetime - begin_datetime
+        return self.end_datetime - self.begin_datetime
     
 # ping_google can be called by a signal
+# TODO rewrite ping_google to be callable by a signal (e.g. add kwargs param)
 #post_save.connect(Event, ping_google)
 
 class MetaEvent(Event):
