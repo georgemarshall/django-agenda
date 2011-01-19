@@ -1,0 +1,84 @@
+{% extends "agenda/base.html" %}
+{% load dajaxice_templatetags %}
+{% load comments %}
+{% load agenda %}
+
+{% block htmlheader %}
+{{ block.super}}
+<link rel='stylesheet' type='text/css' href='/static/css/calendar.css' />
+<link rel='stylesheet' type='text/css' href='/static/css/fullcalendar/fullcalendar.css' />
+<script type='text/javascript' src='/static/js/jquery-1.4.4.min.js'></script>
+<script type='text/javascript' src='/static/js/fullcalendar/fullcalendar.min.js'></script>
+{% dajaxice_js_import %}
+
+<script type='text/javascript'>
+$(document).ready(function() {	
+	$('#calendar').fullCalendar({
+		firstDay : 1 ,//monday
+		weekMode : 'variable',
+		year: {{month.year}},
+		month: {{month.month}}-1,
+		header: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'month,agendaWeek,agendaDay'
+		},
+		editable: true,
+		selectable: true,
+		selectHelper: true,
+		select: function(startDate, endDate, allDay) {
+			
+		},
+	    dayClick: function(date, allDay, jsEvent, view) {
+			console.log(date);
+	    },
+	    eventClick: function(calEvent, jsEvent, view) {
+	        alert('Event: ' + calEvent.title + ' id=' + calEvent.id);
+	        alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+	        alert('View: ' + view.name);
+	    },
+		{% if event_list %}
+		events: [
+		         {% for event in event_list %}
+					{
+						id : {{ event.id }},
+						title: '{{ event.title }}',
+						start: new Date({{ event.event_date|date:"Y, m-1, d"}}, {{event.start_time|time:"H, i"}}, 0, 0),
+						end: new Date({{ event.event_date|date:"Y, m-1, d"}}, {{event.end_time|time:"H, i"}}, 0, 0),
+					},
+				{% endfor %}
+				],
+		{% endif %}
+	});
+	
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+<a href="{% url myagenda_create_event %}">Create event</a>
+<div class="calendar">
+	<div id='calendar'></div>
+	{%if month %}
+   <small>
+		<a href="{% url agenda-archive-year month.year %}">Year overview</a><br />
+	    <a href="{% url agenda-icalendar %}">Subscribe</a> to this calendar with iCal, Outlook, Google Calendar etc.
+	</small>
+	{% endif %}
+</div>
+
+{% if event_list %}
+    <div class="events">
+        <big>Events</big>
+        <ul>
+        {% for event in event_list %}
+                <li>
+                	<a href="{% url agenda-archive-day event.begin_date.year event.begin_date.month event.begin_date.day %}">{{ event.begin_date|date:"D d M"}}</a>
+                	<a href="{% url agenda-detail event.begin_date.year event.begin_date.month event.begin_date.day event.slug %}">{{ event.title }}</a>
+                </li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+{% endblock %}
