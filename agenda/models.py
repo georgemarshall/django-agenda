@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.db import models
 
 from django.utils.translation import ugettext_lazy as _
@@ -14,6 +12,9 @@ from django.contrib.sites.managers import CurrentSiteManager
 
 from django.contrib.sitemaps import ping_google
 from django.db.models.signals import post_save
+from dateutil import rrule
+from datetime import datetime, time
+from django.db.models import signals
 
 
 class PublicationManager(CurrentSiteManager):
@@ -44,8 +45,8 @@ class AbstractEvent(models.Model):
     published = PublicationManager()
 
     # Fields
-    begin_date = models.DateField(_('date'))
-    end_date = models.DateField(_('date'), null=True)
+    begin_date = models.DateField(_('begin date'))
+    end_date = models.DateField(_('end date'), null=True)
 
     publish_date = models.DateTimeField(_('publication date'), default=datetime.now())
     publish = models.BooleanField(_('publish'), default=True)
@@ -82,9 +83,9 @@ class Event(AbstractEvent):
     slug = models.SlugField(_('slug'), db_index=True)
 
     #Relative to begin_date
-    start_time = models.TimeField(_('start time'), blank=True, null=True)
+    start_time = models.TimeField(_('start time'), default=time(12), blank=True, null=True)
     #Relative to end_date
-    end_time = models.TimeField(_('end time'), blank=True, null=True)
+    end_time = models.TimeField(_('end time'), default=time(12), blank=True, null=True)
     
     description = models.TextField(_('description'))
 
@@ -121,10 +122,66 @@ class MetaEvent(Event):
 
 class Calendar(models.Model):
     name = models.CharField(_('name'), max_length=100, blank=True, null=True)
-
     events = models.ManyToManyField(Event, related_name='calendars', blank=True, null=True)
 
     def __unicode__(self):
         if self.name:
             return self.name
         return _("Unnamed Calendar")
+
+FREQUENCY_CHOICES = (
+    (rrule.DAILY,   _(u'Day(s)')),
+    (rrule.WEEKLY,  _(u'Week(s)')),
+    (rrule.MONTHLY, _(u'Month(s)')),
+    (rrule.YEARLY,  _(u'Year(s)')),
+)
+
+class Recurrence(models.Model):
+    """
+        This model is used when a event is created and that this event is recurrent.
+        It wraps the dateutil.rrule params (http://labix.org/python-dateutil)
+    """
+    base_event = models.OneToOneField(Event, verbose_name=_('event'), related_name='base_recurence')
+    recurrent_events = models.ManyToManyField(Event, verbose_name=_('recurrent events'), related_name='parent_recurence')
+    
+    # in most cases, should be base_event.start_datetime
+    start_datetime = models.DateTimeField(_('recurrence begin date')) #rrule dtstart
+    frequency = models.CharField(_('frequency'), max_length=1, choices=FREQUENCY_CHOICES)
+    
+    end_datetime = models.DateTimeField(_('end date'), blank=True, null=True) # rrule until
+    count = models.PositiveIntegerField(_('count'), blank=True, null=True)
+    interval = models.PositiveIntegerField(_('interval'), blank=True, null=True)
+    
+    def save(self, **kwargs):
+        if not self.start_datetime:
+            self.start_datetime = self.base_event.start_datetime
+        
+        has_end_datetime = False if self.end_datetime == None else True
+        has_count = False if self.count == None else True
+        if not (has_end_datetime ^ has_count):
+            raise AttributeError("One and only one of the end_datetime and count params has to be used at a time")
+
+        models.Model.save(self)
+
+def create_recurrence(sender, instance, created, **kwargs):
+    if created:
+        kwargs = {'dtstart' : instance.start_datetime}
+        if instance.end_datetime:
+            kwargs['end_datetime'] = instance.end_datetime
+        elif instance.count:
+            kwargs['count'] = instance.count
+        if instance.interval:
+            kwargs['interval'] = instance.interval
+        occurs = rrule.rrule(instance.frequency, **kwargs)
+        cpt=1
+        for o in occurs:
+            cpt+=1
+            if o != instance.start_datetime:
+                event = Event.objects.create(begin_date=datetime.now(), slug="%s-%s" % (instance.base_event, cpt))
+                instance.recurrent_events.add(event)
+    else:
+        pass
+
+signals.post_save.connect(create_recurrence, Recurrence)
+    
+    
