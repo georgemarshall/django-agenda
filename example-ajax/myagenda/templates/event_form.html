@@ -53,17 +53,18 @@
 	  	});
 	</script>
 
-	<title> Formulaire </title>
+	<title> Create Event </title>
 
 </head>
 <body>
-<form>
+<form action="." method="post">{% csrf_token %}
 
 <div id="form">
 		<div class="block">
 			<p>
 				{{event_form.title.label_tag}}
 				{{event_form.title}}
+				{{event_form.title.errors}}
 			</p>
 
 			<p> 
@@ -86,11 +87,14 @@
 				{{event_form.begin_date.label_tag}}
 					{{event_form.begin_date}}
 					{{event_form.start_time}}
+					{{event_form.begin_date.errors}}
+					
 			</p>
 			<p>
 				{{event_form.end_date.label_tag}}
 					{{event_form.end_date}}
 					{{event_form.end_time}}
+					{{event_form.end_date.errors}}
 			</p>
 		</div>
 		<div class="block">
@@ -127,6 +131,7 @@
 			</div>
 		</div>
 	</div>
+	<input type="submit" value="Create" />
 </form>
 </body>
 </html>
