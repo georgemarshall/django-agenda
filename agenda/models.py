@@ -87,7 +87,7 @@ class Event(AbstractEvent):
     #Relative to end_date
     end_time = models.TimeField(_('end time'), default=time(12), blank=True, null=True)
     
-    description = models.TextField(_('description'))
+    description = models.TextField(_('description'), blank=True, null=True)
 
     # Extra fields
     add_date = models.DateTimeField(_('add date'), auto_now_add=True)
