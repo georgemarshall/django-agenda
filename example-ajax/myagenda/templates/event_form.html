@@ -1,2 +1,138 @@
-{{event_form.as_p}}
-{{recurrence_form.as_p}}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}">
+<head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/style.css" />
+  	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/ui-lightness/jquery-ui-1.8.6.custom.css" />
+  	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/redmond/jquery-ui-timepicker.css" />
+  	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/redmond/jquery.ui.theme.css" />
+  	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/datepicker/jquery.datepick.css" /> 
+  	<script type="text/javascript" src="{{MEDIA_URL}}/js/jquery-1.4.4.min.js"></script>
+
+  	<script type="text/javascript" src="{{MEDIA_URL}}/js/jquery-ui-1.8.6.custom.min.js"></script>
+  	<script type="text/javascript" src="{{MEDIA_URL}}/js/jquery.ui.timepicker.js"></script>
+  	<script type="text/javascript" src="{{MEDIA_URL}}/js/datepicker/jquery.datepick.js"></script>
+  	<script type="text/javascript" src="{{MEDIA_URL}}/js/datepicker/jquery.datepick-fr.js"></script>
+	<script type="text/javascript">
+  		$(document).ready(function(){
+	  		$('.toggle_button').click(function() {
+	  			$(this).parent().next().slideToggle('slow');
+	  		});
+	  		$('input#all_day').change(function() {
+	  			if($(this).is(":checked")) {
+	  				$(".date").attr("disabled", "disabled")
+	  				$(".hour").attr("disabled", "disabled")
+	 			}
+	  			else {
+	  				$(".date").removeAttr("disabled");
+	  				$(".hour").removeAttr("disabled");
+	  			}
+	  		});
+	  		// Datepicker
+			//$('.datepicker').datepicker();
+			$('.datepicker').datepick(); 
+			// http://fgelinas.com/code/timepicker/timepicker.html
+			$('.timepicker').timepicker ({
+				timeSeparator: ':'
+			});
+			// Increment or Decrement count value ; interval value
+			$(".inc").click(function() {
+			    var inc = $(this);
+			    var value = inc.parent().find("input").val();
+			    if (inc.text() == "+") {
+			    	value = parseFloat(value) + 1;
+			    } 
+			   	else {
+			   		if (value >= 1) {
+			    		value = parseFloat(value) - 1;
+			    	}
+				}
+				inc.parent().find("input").val(value);
+			});
+	  	});
+	</script>
+
+	<title> Formulaire </title>
+
+</head>
+<body>
+<form>
+
+<div id="form">
+		<div class="block">
+			<p>
+				{{event_form.title.label_tag}}
+				{{event_form.title}}
+			</p>
+
+			<p> 
+				{{event_form.description.label_tag}}<a class="toggle_button" href="#">>></a>
+			</p>
+			<div style="display: none;">
+				{{event_form.description}}
+			</div>
+		</div>
+		<div class="block">
+
+			<p>
+				<label>Date </label><br />
+			</p>
+			<p>
+				<label>All Day </label>
+				<input id="all_day" name="all_day" type="checkbox" />
+			</p>
+			<p>
+				{{event_form.begin_date.label_tag}}
+					{{event_form.begin_date}}
+    				<img src="{{MEDIA_URL}}/css/datepicker/calendar.gif" alt="Calendar" />
+					{{event_form.start_time}}
+			</p>
+			<p>
+				{{event_form.end_date.label_tag}}
+					{{event_form.end_date}}
+
+					<img src="{{MEDIA_URL}}/css/datepicker/calendar.gif" alt="Calendar" />
+					{{event_form.end_time}}
+			</p>
+		</div>
+		<div class="block">
+			<p>
+				<label>Repetition </label><a class="toggle_button" href="#">>></a>
+			</p>
+
+			<div style="display: none;">
+				<p>
+					{{recurrence_form.frequency.label_tag}}
+					{{recurrence_form.frequency}}
+
+				</p>
+				<p>
+					{{recurrence_form.interval.label_tag}}
+					{{recurrence_form.interval}}
+					<a class="inc" href="#">-</a>
+					<a class="inc" href="#">+</a>
+				</p>
+				<p>
+					{{recurrence_form.start_datetime.label_tag}}
+					{{recurrence_form.start_datetime}}
+						<img src="{{MEDIA_URL}}/css/datepicker/calendar.gif" alt="Calendar" />
+				</p><br />
+				<p>
+					{{recurrence_form.end_datetime.label_tag}}
+					{{recurrence_form.end_datetime}}
+						<img src="{{MEDIA_URL}}/css/datepicker/calendar.gif" alt="Calendar" />
+				</p>
+				<p>
+					{{recurrence_form.count.label_tag}}
+					{{recurrence_form.count}}
+
+					<a class="inc" href="#">-</a>
+					<a class="inc" href="#">+</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</form>
+</body>
+</html>

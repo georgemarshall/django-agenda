@@ -30,7 +30,7 @@ USE_I18N = True
 USE_L10N = True
 
 MEDIA_ROOT = ''
-MEDIA_URL = ''
+MEDIA_URL = '/static/'
 
 ADMIN_MEDIA_PREFIX = '/media/'
 

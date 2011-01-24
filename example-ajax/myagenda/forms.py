@@ -1,3 +1,35 @@
 from django import forms
+from agenda.models import Event, Recurrence
 
-# place form definition here
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ('begin_date', 
+                  'start_time', 
+                  'end_date',
+                  'end_time',
+                  'title',
+                 'description')
+        widgets = {
+            'begin_date': forms.DateInput(attrs={'class' : 'begin date datepicker'}),
+            'start_time': forms.TimeInput(attrs={'class' : 'begin hour timepicker'}),
+            'end_date': forms.DateInput(attrs={'class' : 'end date datepicker'}),
+            'end_time': forms.TimeInput(attrs={'class' : 'end hour timepicker'}),
+            'title': forms.TextInput(attrs={'class' : 'text'}),
+            'description' : forms.Textarea(attrs={'class' : 'desc', 'rows' : 4}),
+        }
+
+class RecurrenceForm(forms.ModelForm):
+    class Meta:
+        model = Recurrence
+        fields = ('frequency',
+                  'start_datetime',
+                  'end_datetime',
+                  'count',
+                  'interval')
+        widgets = {
+            'start_datetime' : forms.DateTimeInput(attrs={'class' : 'datepicker'}),
+            'end_datetime' : forms.DateTimeInput(attrs={'class' : 'datepicker'}),
+            'count' : forms.TextInput(attrs={'value' : '0'}),
+            'interval' : forms.TextInput(attrs={'value' : '0'})
+        }
