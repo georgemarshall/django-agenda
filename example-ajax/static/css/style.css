@@ -5,12 +5,18 @@ label {
 	text-align: left;
 }
 
-input {
+input, select {
 	position: relative;	
+	width: 100px;
+}
+
+input.datepicker{
+	margin-right: 2px;
 }
 
 input.timepicker {
-	width: 137px;
+	width: 80px;
+	margin-left: 10px;
 }
 
 input.text {
@@ -18,12 +24,11 @@ input.text {
 }
 
 textarea {
-	width: 475px;
 	margin-bottom: 5px;
 }
 
 div.block {
-	width: 477px;
+	width: 370px;
 	margin-bottom: 5px;
 	-moz-border-radius: 5px;
 	padding-right: 2px;

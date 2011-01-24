@@ -16,7 +16,7 @@ class EventForm(forms.ModelForm):
             'end_date': forms.DateInput(attrs={'class' : 'end date datepicker'}),
             'end_time': forms.TimeInput(attrs={'class' : 'end hour timepicker'}),
             'title': forms.TextInput(attrs={'class' : 'text'}),
-            'description' : forms.Textarea(attrs={'class' : 'desc', 'rows' : 4}),
+            'description' : forms.Textarea(attrs={'class' : 'desc', 'cols' : 48, 'rows' : 4}),
         }
 
 class RecurrenceForm(forms.ModelForm):
