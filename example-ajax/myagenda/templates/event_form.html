@@ -50,6 +50,10 @@
 				}
 				inc.parent().find("input").val(value);
 			});
+			
+			{% if has_recurrence%}
+				$("input[name=recurrence]").click();
+			{% endif %}
 	  	});
 	</script>
 
@@ -99,18 +103,20 @@
 		</div>
 		<div class="block">
 			<p>
-				<label>Repetition </label><a class="toggle_button" href="#">>></a>
+				<label>Repetition</label><input class="toggle_button" type="checkbox" name="recurrence"/>
 			</p>
 
 			<div style="display: none;">
 				<p>
 					{{recurrence_form.frequency.label_tag}}
 					{{recurrence_form.frequency}}
+					{{recurrence_form.frequency.errors}}
 
 				</p>
 				<p>
 					<label for="id_start_datetime">Begin date</label>
 					{{recurrence_form.start_datetime}}
+					{{recurrence_form.start_datetime.errors}}
 				</p>
 				<p>
 					{{recurrence_form.interval.label_tag}}
