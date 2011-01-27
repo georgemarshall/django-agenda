@@ -2,5 +2,5 @@ Django>=1.2.3
 python-dateutil>=1.5
 vobject>=0.8.1c
 django-dajaxice
-
+-e hg+https://bitbucket.org/neithere/django-autoslug#egg=django-autoslug
 -e git+http://github.com/django-extensions/django-extensions.git#egg=django-extensions

@@ -15,6 +15,7 @@ from django.db.models.signals import post_save
 from dateutil import rrule
 from datetime import datetime, time
 from django.db.models import signals
+from autoslug import AutoSlugField
 
 
 class PublicationManager(CurrentSiteManager):
@@ -80,7 +81,11 @@ class Event(AbstractEvent):
     # Core fields
     state = models.CharField(_('state'), max_length=1, default='V', choices=STATE_CHOICES)
     title = models.CharField(_('title'), max_length=255)
-    slug = models.SlugField(_('slug'), db_index=True)
+    slug = AutoSlugField(populate_from='title', 
+                         unique=True, 
+                         unique_with='begin_date', 
+                         db_index=True,
+                         editable=True)
 
     #Relative to begin_date
     start_time = models.TimeField(_('start time'), default=time(12), blank=True, null=True)
@@ -173,12 +178,10 @@ def create_recurrence(sender, instance, created, **kwargs):
         if instance.interval:
             kwargs['interval'] = instance.interval
         occurs = rrule.rrule(instance.frequency, **kwargs)
-        cpt=1
         for o in occurs:
-            cpt+=1
             if o != instance.start_datetime:
-                event = Event.objects.create(begin_date=datetime.now(), slug="%s-%s" % (instance.base_event, cpt))
-                instance.recurrent_events.add(event)
+                print o
+                #instance.recurrent_events.add(event)
     else:
         pass
 
