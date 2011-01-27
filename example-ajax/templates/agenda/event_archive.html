@@ -43,8 +43,8 @@ $(document).ready(function() {
 					{
 						id : {{ event.id }},
 						title: '{{ event.title }}',
-						start: new Date({{ event.event_date|date:"Y, m-1, d"}}, {{event.start_time|time:"H, i"}}, 0, 0),
-						end: new Date({{ event.event_date|date:"Y, m-1, d"}}, {{event.end_time|time:"H, i"}}, 0, 0),
+						start: new Date({{ event.start_datetime|date:"Y, m, d, H, i"}}),
+						end: new Date({{ event.end_datetime|date:"Y, m, d, H, i"}}),
 					},
 				{% endfor %}
 				],
@@ -67,18 +67,4 @@ $(document).ready(function() {
 	</small>
 	{% endif %}
 </div>
-
-{% if event_list %}
-    <div class="events">
-        <big>Events</big>
-        <ul>
-        {% for event in event_list %}
-                <li>
-                	<a href="{% url agenda-archive-day event.begin_date.year event.begin_date.month event.begin_date.day %}">{{ event.begin_date|date:"D d M"}}</a>
-                	<a href="{% url agenda-detail event.begin_date.year event.begin_date.month event.begin_date.day event.slug %}">{{ event.title }}</a>
-                </li>
-        {% endfor %}
-        </ul>
-    </div>
-{% endif %}
 {% endblock %}
