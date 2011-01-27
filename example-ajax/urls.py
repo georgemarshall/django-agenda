@@ -28,8 +28,8 @@ urlpatterns += patterns('',
     (r'^agenda/', include('myagenda.urls')),
 
     # Django Admin
-    (r'^admin/(.*)', admin.site.root),
-    
+    (r'^admin/(.*)', include(admin.site.urls)),
+     
     # Comments support
     (r'^comments/', include('django.contrib.comments.urls')),
     
