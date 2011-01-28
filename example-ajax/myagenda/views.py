@@ -5,7 +5,7 @@ from django.template.context import RequestContext
 from .forms import EventForm, RecurrenceForm
 from agenda.models import Recurrence, Event
 from datetime import date
-from agenda.views.date_based import archive
+from agenda.views.date_based import archive, object_detail
 
 
 def current_month_view(request):
@@ -18,7 +18,21 @@ def current_month_view(request):
                    template_name='current_month_view.html', 
                    template_object_name='event', 
                    extra_context=None)#TODO: add calendar
-            
+
+def show_event(request,year, month, day, slug):
+    queryset = Event.objects.all();
+    date_field = 'begin_date'
+    return object_detail(request, 
+                         queryset, 
+                         date_field, 
+                         year, 
+                         month, 
+                         day, 
+                         slug, 
+                         template_name='current_month_view.html', 
+                         template_object_name='current_event',
+                         extra_context={'event_list' : queryset})
+    
 def create_event(request):
     has_recurrence = False
     if request.method == "POST":
@@ -38,6 +52,7 @@ def create_event(request):
                     print "RECURRENCE_FORM", recurrence_form.errors
             else:
                 event.save()
+                return HttpResponse()
         else:
             print "EVENT_FORM", event_form.errors  
     else:
