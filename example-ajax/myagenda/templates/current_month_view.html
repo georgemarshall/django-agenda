@@ -27,15 +27,12 @@ $(document).ready(function() {
 			console.log(date);
 	    },
 	    eventClick: function(calEvent, jsEvent, view) {
-	        alert('Event: ' + calEvent.title + ' id=' + calEvent.id);
-	        alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-	        alert('View: ' + view.name);
 	    },
 		{% if event_list %}
 		events: [
 		         {% for event in event_list %}
 					{
-						id : {{ event.id }},
+						url : '{{event.get_absolute_url}}',
 						title: '{{ event.title }}',
 						start: new Date({{ event.start_datetime|date:"Y, m-1, d, H, i"}}),
 						end: new Date({{ event.end_datetime|date:"Y, m-1, d, H, i"}}),
@@ -57,10 +54,26 @@ $(document).ready(function() {
 <div id="calendar_list" class="grid_2 alpha">
 Calendar(s)
 </div>
-<div id="calendar_container" class="grid_12">
+<div id="calendar_container" class="grid_11">
 	<div id="calendar">
 	</div>
 </div>
-<div id="event_detail" class="grid_2 omega">
+<div id="event_detail" class="grid_3 omega">
+{% if current_event %}
+			<div class="block">
+			<p>
+				Title : {{current_event.title}}
+			</p>
+				{% if current_event.description %}
+				<p>Desc : {{current_event.description}}</p>
+				{% endif %}
+			<p>
+				Begins the {{current_event.begin_date}} at {{current_event.start_time}}	
+			</p>
+			<p>
+				Ends the {{current_event.end_date}} at {{current_event.end_time}}
+			</p>
+		</div>
+{% endif %}
 </div>
 {% endblock %}
