@@ -8,6 +8,8 @@ sys.path.append(os.path.join(PROJECT_ROOT,'..'))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+PROJECT_PATH = os.path.abspath('%s' % os.path.dirname(__file__))
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -29,8 +31,8 @@ SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
 
-MEDIA_ROOT = ''
-MEDIA_URL = '/static/'
+MEDIA_ROOT = os.path.join(PROJECT_PATH, 'static')
+MEDIA_URL = '/site_media/'
 
 ADMIN_MEDIA_PREFIX = '/media/'
 
@@ -53,7 +55,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'example-ajax.urls'
 
 TEMPLATE_DIRS = (
-	'templates'	
+	'./templates'	
 )
 INSTALLED_APPS = (
     'django_extensions',

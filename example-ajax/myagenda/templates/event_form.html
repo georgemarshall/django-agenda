@@ -1,66 +1,57 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% extends "base.html" %}
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}">
-<head>
-  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/style.css" />
-  	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/smoothness/jquery-ui-datepicker-1.8.9.css" />
-  	<link rel="stylesheet" href="{{MEDIA_URL}}css/jquery-ui-timepicker.css" type="text/css" />
-  	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-1.4.4.min.js"></script>
-  	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery-ui-1.8.9.datepicker.min.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.ui.timepicker-0.0.6.js"></script>
-  	
-	<script type="text/javascript">
-  		$(document).ready(function(){
-	  		$('.toggle_button').click(function() {
-	  			$(this).parent().next().slideToggle('slow');
-	  		});
-	  		$('input#all_day').change(function() {
-	  			if($(this).is(":checked")) {
-	  				$(".date").attr("disabled", "disabled")
-	  				$(".hour").attr("disabled", "disabled")
-	 			}
-	  			else {
-	  				$(".date").removeAttr("disabled");
-	  				$(".hour").removeAttr("disabled");
-	  			}
-	  		});
-	  		// Datepicker
-			$(".datepicker").datepicker({
-				showOn: "both",
-				buttonImage: "{{MEDIA_URL}}img/calendar.gif",
-				buttonImageOnly: true
-			});
+{% block htmlheader %}
 
-			// http://fgelinas.com/code/timepicker/timepicker.html
-			$('.timepicker').timepicker ({
-				timeSeparator: 'h'
-			});
-			// Increment or Decrement count value ; interval value
-			$(".inc").click(function() {
-			    var inc = $(this);
-			    var value = inc.parent().find("input").val();
-			    if (inc.text() == "+") {
-			    	value = parseFloat(value) + 1;
-			    } 
-			   	else {
-			   		if (value >= 1) {
-			    		value = parseFloat(value) - 1;
-			    	}
-				}
-				inc.parent().find("input").val(value);
-			});
-			
-			{% if has_recurrence%}
-				$("input[name=recurrence]").click();
-			{% endif %}
-	  	});
-	</script>
+<script type="text/javascript">
+ 		$(document).ready(function(){
+  		$('.toggle_button').click(function() {
+  			$(this).parent().next().slideToggle('slow');
+  		});
+  		$('input#all_day').change(function() {
+  			if($(this).is(":checked")) {
+  				$(".date").attr("disabled", "disabled")
+  				$(".hour").attr("disabled", "disabled")
+ 			}
+  			else {
+  				$(".date").removeAttr("disabled");
+  				$(".hour").removeAttr("disabled");
+  			}
+  		});
+  		// Datepicker
+		$(".datepicker").datepicker({
+			showOn: "both",
+			buttonImage: "{{MEDIA_URL}}img/calendar.gif",
+			buttonImageOnly: true
+		});
 
-	<title> Create Event </title>
+		// http://fgelinas.com/code/timepicker/timepicker.html
+		$('.timepicker').timepicker ({
+			timeSeparator: 'h'
+		});
+		// Increment or Decrement count value ; interval value
+		$(".inc").click(function() {
+		    var inc = $(this);
+		    var value = inc.parent().find("input").val();
+		    if (inc.text() == "+") {
+		    	value = parseFloat(value) + 1;
+		    } 
+		   	else {
+		   		if (value >= 1) {
+		    		value = parseFloat(value) - 1;
+		    	}
+			}
+			inc.parent().find("input").val(value);
+		});
+		
+		{% if has_recurrence%}
+			$("input[name=recurrence]").click();
+		{% endif %}
+  	});
+</script>
+{% endblock %}
 
-</head>
-<body>
+
+{% block content %}
 <form action="." method="post">{% csrf_token %}
 
 <div id="form">
@@ -139,5 +130,4 @@
 	</div>
 	<input type="submit" value="Create" />
 </form>
-</body>
-</html>
+{% endblock %}

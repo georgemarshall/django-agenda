@@ -1,12 +1,24 @@
 # Create your views here.
-from django.forms.models import modelform_factory
-from agenda.models import Recurrence, Event
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from .forms import EventForm, RecurrenceForm
-from django.http import HttpResponse
+from agenda.models import Recurrence, Event
+from datetime import date
+from agenda.views.date_based import archive
 
 
+def current_month_view(request):
+    today = date.today()
+    return archive(request, 
+                   Event.objects.all(),
+                   'begin_date',
+                   today.year, 
+                   month=today.month, 
+                   template_name='current_month_view.html', 
+                   template_object_name='event', 
+                   extra_context=None)#TODO: add calendar
+            
 def create_event(request):
     has_recurrence = False
     if request.method == "POST":

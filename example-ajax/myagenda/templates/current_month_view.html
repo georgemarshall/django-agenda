@@ -1,14 +1,8 @@
-{% extends "agenda/base.html" %}
+{% extends "base.html" %}
 {% load dajaxice_templatetags %}
-{% load comments %}
 {% load agenda %}
 
 {% block htmlheader %}
-{{ block.super}}
-<link rel='stylesheet' type='text/css' href='/static/css/calendar.css' />
-<link rel='stylesheet' type='text/css' href='/static/css/fullcalendar/fullcalendar.css' />
-<script type='text/javascript' src='/static/js/jquery-1.4.4.min.js'></script>
-<script type='text/javascript' src='/static/js/fullcalendar/fullcalendar.min.js'></script>
 {% dajaxice_js_import %}
 
 <script type='text/javascript'>
@@ -57,14 +51,17 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-<a href="{% url myagenda_create_event %}">Create event</a>
-<div class="calendar">
-	<div id='calendar'></div>
-	{%if month %}
-   <small>
-		<a href="{% url agenda-archive-year month.year %}">Year overview</a><br />
-	    <a href="{% url agenda-icalendar %}">Subscribe</a> to this calendar with iCal, Outlook, Google Calendar etc.
-	</small>
-	{% endif %}
+<div class="grid_16 alpha omega">
+<a href="{% url myagenda_create_event %}" >Create event</a>
+</div>
+<div id="calendar_list" class="grid_2 alpha">
+Calendar(s)
+</div>
+<div id="calendar_container" class="grid_12">
+	<div id="calendar">
+	</div>
+</div>
+<div id="event_detail" class="grid_2 omega">
+Event detail
 </div>
 {% endblock %}
