@@ -37,8 +37,8 @@ $(document).ready(function() {
 					{
 						id : {{ event.id }},
 						title: '{{ event.title }}',
-						start: new Date({{ event.start_datetime|date:"Y, m, d, H, i"}}),
-						end: new Date({{ event.end_datetime|date:"Y, m, d, H, i"}}),
+						start: new Date({{ event.start_datetime|date:"Y, m-1, d, H, i"}}),
+						end: new Date({{ event.end_datetime|date:"Y, m-1, d, H, i"}}),
 					},
 				{% endfor %}
 				],
@@ -62,6 +62,5 @@ Calendar(s)
 	</div>
 </div>
 <div id="event_detail" class="grid_2 omega">
-Event detail
 </div>
 {% endblock %}
