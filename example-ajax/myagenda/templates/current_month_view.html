@@ -21,12 +21,14 @@ $(document).ready(function() {
 		selectable: true,
 		selectHelper: true,
 		select: function(startDate, endDate, allDay) {
-			
+			console.log(startDate);
+			console.log(endDate);
 		},
 	    dayClick: function(date, allDay, jsEvent, view) {
 			console.log(date);
 	    },
 	    eventClick: function(calEvent, jsEvent, view) {
+	    	
 	    },
 		{% if event_list %}
 		events: [
