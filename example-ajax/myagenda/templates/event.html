@@ -1,6 +1,6 @@
 <div onclick="location.href='{% url myagenda_show_event event.slug %}';"  class="block event">
 	<p>
-		Title : {{event.title}}
+		Title : {{event.title}} <a style="float: right;" href="">del</a>
 	</p>
 		{% if event.description %}
 		<p>Desc : {{event.description}}</p>
