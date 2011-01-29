@@ -32,7 +32,7 @@ $(document).ready(function() {
 		events: [
 		         {% for event in event_list %}
 					{
-						url : '{{event.get_absolute_url}}',
+						url : '{% url myagenda_show_event event.slug%}',
 						title: '{{ event.title }}',
 						start: new Date({{ event.start_datetime|date:"Y, m-1, d, H, i"}}),
 						end: new Date({{ event.end_datetime|date:"Y, m-1, d, H, i"}}),
@@ -48,32 +48,36 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-<div class="grid_16 alpha omega">
-<a href="{% url myagenda_create_event %}" >Create event</a>
+<div id="info_panel" class="grid_2 alpha">
+<a href="#" >New calendar</a>
+<h4>Calendar(s)</h4>
+<ul>
+{% for calendar in calendars %}
+	<li>{{calendar}}</li>
+{% empty %}
+	<li>No declared calendar</li>
+{% endfor %}
+</ul>
 </div>
-<div id="calendar_list" class="grid_2 alpha">
-Calendar(s)
-</div>
-<div id="calendar_container" class="grid_11">
+<div id="calendar_panel" class="grid_11">
 	<div id="calendar">
 	</div>
 </div>
-<div id="event_detail" class="grid_3 omega">
+<div id="events_panel" class="grid_3 omega">
+<p>
+<a href="{% url myagenda_create_event %}" >New event</a>
+<a style="float: right;" href="{% url myagenda_current_month_view %}" >All events</a>
+</p>
 {% if current_event %}
-			<div class="block">
-			<p>
-				Title : {{current_event.title}}
-			</p>
-				{% if current_event.description %}
-				<p>Desc : {{current_event.description}}</p>
-				{% endif %}
-			<p>
-				Begins the {{current_event.begin_date}} at {{current_event.start_time}}	
-			</p>
-			<p>
-				Ends the {{current_event.end_date}} at {{current_event.end_time}}
-			</p>
-		</div>
+	{% with current_event as event%}
+		{% include "event.html" %}
+	{% endwith %}
+{% else %}
+	{% if month_events %}
+		{% for event in month_events %}
+			{% include "event.html" %}
+		{% endfor %}
+	{% endif %}
 {% endif %}
-</div>
+
 {% endblock %}

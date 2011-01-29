@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     (r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),
     url(r'^$', current_month_view, name="myagenda_current_month_view"),
     url(r'^event/create/', create_event, name="myagenda_create_event"),
-    url(r'^(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})/(?P<slug>[-\w]+)/$', show_event, name='agenda-detail'),
+    url(r'^event/(?P<slug>[-\w]+)/$', show_event, name='myagenda_show_event'),
     (r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),
 )
 

@@ -3,13 +3,15 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from .forms import EventForm, RecurrenceForm
-from agenda.models import Recurrence, Event
+from agenda.models import Recurrence, Event, Calendar
 from datetime import date
 from agenda.views.date_based import archive, object_detail
 
 
 def current_month_view(request):
     today = date.today()
+    calendars = Calendar.objects.all()
+    month_events = Event.objects.filter(begin_date__month=today.month).order_by('begin_date')
     return archive(request, 
                    Event.objects.all(),
                    'begin_date',
@@ -17,17 +19,18 @@ def current_month_view(request):
                    month=today.month, 
                    template_name='current_month_view.html', 
                    template_object_name='event', 
-                   extra_context=None)#TODO: add calendar
+                   extra_context={'calendars' : calendars,
+                                  'month_events' : month_events})#TODO: add calendar
 
-def show_event(request,year, month, day, slug):
+def show_event(request, slug):
     queryset = Event.objects.all();
-    date_field = 'begin_date'
+    event = queryset.get(slug=slug)
     return object_detail(request, 
                          queryset, 
-                         date_field, 
-                         year, 
-                         month, 
-                         day, 
+                         'begin_date', 
+                         event.begin_date.year, 
+                         event.begin_date.month, 
+                         event.begin_date.day, 
                          slug, 
                          template_name='current_month_view.html', 
                          template_object_name='current_event',
