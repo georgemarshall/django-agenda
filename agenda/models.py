@@ -151,7 +151,7 @@ class Recurrence(models.Model):
     
     # in most cases, should be base_event.start_datetime
     start_datetime = models.DateTimeField(_('recurrence begin date')) #rrule dtstart
-    frequency = models.CharField(_('frequency'), max_length=1, choices=FREQUENCY_CHOICES)
+    frequency = models.SmallIntegerField(_('frequency'), choices=FREQUENCY_CHOICES)
     
     end_datetime = models.DateTimeField(_('end date'), blank=True, null=True) # rrule until
     count = models.PositiveIntegerField(_('count'), blank=True, null=True)
@@ -160,6 +160,9 @@ class Recurrence(models.Model):
     def save(self, **kwargs):
         if not self.start_datetime:
             self.start_datetime = self.base_event.start_datetime
+        
+        self.start_datetime = self.start_datetime.replace(minute=self.base_event.start_time.minute,
+                                                          hour=self.base_event.start_time.hour)
         
         has_end_datetime = False if self.end_datetime == None else True
         has_count = False if self.count == None else True
@@ -174,7 +177,7 @@ def create_recurrence(sender, instance, created, **kwargs):
         if instance.end_datetime:
             kwargs['end_datetime'] = instance.end_datetime
         elif instance.count:
-            kwargs['count'] = instance.count
+            kwargs['count'] = instance.count + 1 #because the base_event date counts for one
         if instance.interval:
             kwargs['interval'] = instance.interval
         occurs = rrule.rrule(instance.frequency, **kwargs)
