@@ -42,13 +42,14 @@ def create_event(request):
         event_form = EventForm(request.POST)
         recurrence_form = RecurrenceForm() # in case of event_form is not valid
         if event_form.is_valid():
-            event = event_form.save(commit=False)
+            event = event_form.save()
             has_recurrence = request.POST.get('recurrence', None) 
             if has_recurrence:
                 has_recurrence = True #instead of "on"
-                recurrence_form = RecurrenceForm(request.POST, initial={'base_event' : event})
+                data= request.POST.copy()
+                data['base_event'] = event.id
+                recurrence_form = RecurrenceForm(data)
                 if recurrence_form.is_valid():
-                    event.save()
                     recurrence_form.save()
                     return HttpResponse()
                 else :
