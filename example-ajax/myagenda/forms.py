@@ -22,7 +22,8 @@ class EventForm(forms.ModelForm):
 class RecurrenceForm(forms.ModelForm):
     class Meta:
         model = Recurrence
-        fields = ('frequency',
+        fields = ('base_event',
+                  'frequency',
                   'start_datetime',
                   'end_datetime',
                   'count',
@@ -31,5 +32,6 @@ class RecurrenceForm(forms.ModelForm):
             'start_datetime' : forms.DateTimeInput(attrs={'class' : 'datepicker'}),
             'end_datetime' : forms.DateTimeInput(attrs={'class' : 'datepicker'}),
             'count' : forms.TextInput(attrs={'value' : '0'}),
-            'interval' : forms.TextInput(attrs={'value' : '0'})
+            'interval' : forms.TextInput(attrs={'value' : '0'}),
+            'base_event' : forms.HiddenInput()
         }
