@@ -13,9 +13,10 @@ from django.contrib.sites.managers import CurrentSiteManager
 from django.contrib.sitemaps import ping_google
 from django.db.models.signals import post_save
 from dateutil import rrule
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from django.db.models import signals
 from autoslug import AutoSlugField
+from dateutil.relativedelta import relativedelta
 
 
 class PublicationManager(CurrentSiteManager):
@@ -68,8 +69,9 @@ class Event(AbstractEvent):
         unique_together = ("begin_date", "slug")
 
     def __unicode__(self):
-        return _("%(title)s on %(begin_date)s") % { 'title'      : self.title,
-                                                    'begin_date' : self.begin_date }
+        return _("%(title)s from %(start_datetime)s to %(end_datetime)s") % { 'title'      : self.title,
+                                                                             'start_datetime' : self.start_datetime,
+                                                                             'end_datetime' : self.end_datetime }
     @models.permalink                                               
     def get_absolute_url(self):
         return ('agenda-detail', (), {'year'  : self.begin_date.year, 
@@ -112,7 +114,7 @@ class Event(AbstractEvent):
     
     @property
     def duration(self):
-        return self.end_datetime - self.begin_datetime
+        return self.end_datetime - self.start_datetime
     
 # ping_google can be called by a signal
 # TODO rewrite ping_google to be callable by a signal (e.g. add kwargs param)
@@ -135,10 +137,10 @@ class Calendar(models.Model):
         return _("Unnamed Calendar")
 
 FREQUENCY_CHOICES = (
-    (rrule.DAILY,   _(u'Day(s)')),
-    (rrule.WEEKLY,  _(u'Week(s)')),
-    (rrule.MONTHLY, _(u'Month(s)')),
-    (rrule.YEARLY,  _(u'Year(s)')),
+    (rrule.DAILY,   _(u'Daily')),
+    (rrule.WEEKLY,  _(u'Weekly')),
+    (rrule.MONTHLY, _(u'Monthly')),
+#    (rrule.YEARLY,  _(u'Year(s)')),
 )
 
 class Recurrence(models.Model):
@@ -149,13 +151,14 @@ class Recurrence(models.Model):
     base_event = models.OneToOneField(Event, verbose_name=_('event'), related_name='base_recurence')
     recurrent_events = models.ManyToManyField(Event, verbose_name=_('recurrent events'), related_name='parent_recurence')
     
-    # in most cases, should be base_event.start_datetime
-    start_datetime = models.DateTimeField(_('recurrence begin date')) #rrule dtstart
     frequency = models.SmallIntegerField(_('frequency'), choices=FREQUENCY_CHOICES)
     
+    # in most cases, should be base_event.start_datetime
+    start_datetime = models.DateTimeField(_('recurrence begin date'), blank=True, null=True) #rrule dtstart
     end_datetime = models.DateTimeField(_('end date'), blank=True, null=True) # rrule until
-    count = models.PositiveIntegerField(_('count'), blank=True, null=True)
+    
     interval = models.PositiveIntegerField(_('interval'), blank=True, null=True)
+    count = models.PositiveIntegerField(_('count'), blank=True, null=True)
     
     def save(self, **kwargs):
         if not self.start_datetime:
@@ -164,30 +167,33 @@ class Recurrence(models.Model):
         self.start_datetime = self.start_datetime.replace(minute=self.base_event.start_time.minute,
                                                           hour=self.base_event.start_time.hour)
         
-        has_end_datetime = False if self.end_datetime == None else True
-        has_count = False if self.count == None else True
-        if not (has_end_datetime ^ has_count):
-            raise AttributeError("One and only one of the end_datetime and count params has to be used at a time")
+        if not self.count and not self.end_datetime:
+            self.end_datetime = self.start_datetime + relativedelta(years=+1)
 
         models.Model.save(self)
 
 def create_recurrence(sender, instance, created, **kwargs):
     if created:
-        kwargs = {'dtstart' : instance.start_datetime}
+        options = {'dtstart' : instance.start_datetime}
         if instance.end_datetime:
-            kwargs['end_datetime'] = instance.end_datetime
+            options['end_datetime'] = instance.end_datetime
         elif instance.count:
-            kwargs['count'] = instance.count + 1 #because the base_event date counts for one
+            options['count'] = instance.count + 1 #because the base_event date counts for one (the first)
         if instance.interval:
-            kwargs['interval'] = instance.interval
-        occurs = rrule.rrule(instance.frequency, **kwargs)
+            options['interval'] = instance.interval
+        occurs = rrule.rrule(instance.frequency, **options)
+        event_class = kwargs.get('event_class', Event)
         for o in occurs:
             if o != instance.start_datetime:
-                print o
-                #instance.recurrent_events.add(event)
+                base_event = instance.base_event
+                event = event_class.objects.create(title=base_event.title,
+                                                   begin_date = o,
+                                                   start_time = base_event.start_time,
+                                                   end_date = o + base_event.duration,
+                                                   end_time = base_event.end_time,
+                                                   description = base_event.description)
+                instance.recurrent_events.add(event)
     else:
         pass
-
-signals.post_save.connect(create_recurrence, Recurrence)
     
     
