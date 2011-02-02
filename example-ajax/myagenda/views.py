@@ -1,19 +1,21 @@
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
-from .forms import EventForm, RecurrenceForm
-from agenda.models import Recurrence, Event, Calendar
+from .forms import MyEventForm, RecurrenceForm
+from .models import MyEvent
+from agenda.models import Recurrence, Calendar
 from datetime import date
 from agenda.views.date_based import archive, object_detail
+from django.core.urlresolvers import reverse
 
 
 def current_month_view(request):
     today = date.today()
     calendars = Calendar.objects.all()
-    month_events = Event.objects.filter(begin_date__month=today.month).order_by('begin_date')
+    month_events = MyEvent.objects.filter(begin_date__month=today.month).order_by('begin_date')
     return archive(request, 
-                   Event.objects.all(),
+                   MyEvent.objects.all(),
                    'begin_date',
                    today.year, 
                    month=today.month, 
@@ -23,7 +25,7 @@ def current_month_view(request):
                                   'month_events' : month_events})#TODO: add calendar
 
 def show_event(request, slug):
-    queryset = Event.objects.all();
+    queryset = MyEvent.objects.all();
     event = queryset.get(slug=slug)
     return object_detail(request, 
                          queryset, 
@@ -39,28 +41,28 @@ def show_event(request, slug):
 def create_event(request):
     has_recurrence = False
     if request.method == "POST":
-        event_form = EventForm(request.POST)
+        event_form = MyEventForm(request.POST)
         recurrence_form = RecurrenceForm() # in case of event_form is not valid
         if event_form.is_valid():
             event = event_form.save()
             has_recurrence = request.POST.get('recurrence', None) 
             if has_recurrence:
-                has_recurrence = True #instead of "on"
-                data= request.POST.copy()
+                has_recurrence = True #instead of "on" in POST
+                data = request.POST.copy()
                 data['base_event'] = event.id
                 recurrence_form = RecurrenceForm(data)
                 if recurrence_form.is_valid():
                     recurrence_form.save()
-                    return HttpResponse()
+                    return HttpResponseRedirect(reverse('myagenda_current_month_view'))
                 else :
                     print "RECURRENCE_FORM", recurrence_form.errors
             else:
                 event.save()
-                return HttpResponse()
+                return HttpResponseRedirect(reverse('myagenda_current_month_view'))
         else:
             print "EVENT_FORM", event_form.errors  
     else:
-        event_form = EventForm()
+        event_form = MyEventForm()
         recurrence_form = RecurrenceForm()
         
     return render_to_response("event_form.html",

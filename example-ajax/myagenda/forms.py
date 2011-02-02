@@ -1,9 +1,10 @@
 from django import forms
-from agenda.models import Event, Recurrence
+from agenda.models import Recurrence
+from .models import MyEvent
 
-class EventForm(forms.ModelForm):
+class MyEventForm(forms.ModelForm):
     class Meta:
-        model = Event
+        model = MyEvent
         fields = ('begin_date', 
                   'start_time', 
                   'end_date',
