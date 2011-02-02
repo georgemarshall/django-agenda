@@ -32,12 +32,12 @@ $(document).ready(function() {
 	    },
 		{% if event_list %}
 		events: [
-		         {% for event in event_list %}
+		         {% for event in month_events %}
 					{
 						url : '{% url myagenda_show_event event.slug%}',
 						title: '{{ event.title }}',
-						start: new Date({{ event.start_datetime|date:"Y, m-1, d, H, i"}}),
-						end: new Date({{ event.end_datetime|date:"Y, m-1, d, H, i"}}),
+						start: new Date({{ event.start_datetime|date:"Y, n-1, j, H, i"}}),
+						end: new Date({{ event.end_datetime|date:"Y, n-1, j, H, i"}}),
 					},
 				{% endfor %}
 				],
