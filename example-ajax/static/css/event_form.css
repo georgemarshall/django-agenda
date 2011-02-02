@@ -15,8 +15,9 @@ div#form .errorlist li{
 div#form label {
 	display: inline-block;
 	float: left;
-	width: 125px;
+	width: 80px;
 	text-align: left;
+	vertical-align: middle;
 }
 
 div#form input, select {
@@ -34,7 +35,7 @@ div#form input.timepicker {
 }
 
 div#form input.text {
-	width: 350px;
+	width: 272px;
 }
 
 div#form textarea {
