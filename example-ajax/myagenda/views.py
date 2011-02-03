@@ -70,3 +70,6 @@ def create_event(request):
                                'recurrence_form':recurrence_form,
                                'has_recurrence' : has_recurrence},
                                context_instance=RequestContext(request))
+    
+def del_event(request):
+    pass

@@ -9,13 +9,14 @@ from dajaxice.core import dajaxice_autodiscover
 dajaxice_autodiscover()
 
 from agenda.models import Event
-from myagenda.views import current_month_view, create_event, show_event
+from myagenda.views import current_month_view, create_event, show_event, del_event
 
 urlpatterns = patterns('',
     (r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),
     url(r'^$', current_month_view, name="myagenda_current_month_view"),
     url(r'^event/create/', create_event, name="myagenda_create_event"),
     url(r'^event/(?P<slug>[-\w]+)/$', show_event, name='myagenda_show_event'),
+    url(r'^event/(?P<slug>[-\w]+)/del/$', del_event, name='myagenda_del_event'),
     (r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),
 )
 
