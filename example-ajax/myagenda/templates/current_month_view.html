@@ -76,6 +76,10 @@ $(document).ready(function() {
 	{% endwith %}
 {% else %}
 	{% if month_events %}
+		<p>
+			* base event <br/>
+			! recurrence
+		</p>
 		{% for event in month_events %}
 			{% include "event.html" %}
 		{% endfor %}
