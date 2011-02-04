@@ -85,7 +85,7 @@ class Event(AbstractEvent):
     title = models.CharField(_('title'), max_length=255)
     slug = AutoSlugField(populate_from='title', 
                          unique=True, 
-                         unique_with='begin_date', 
+                         #unique_with='begin_date', 
                          db_index=True,
                          editable=True)
 
