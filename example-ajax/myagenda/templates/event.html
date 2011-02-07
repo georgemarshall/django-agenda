@@ -1,15 +1,10 @@
 <div onclick="location.href='{% url myagenda_show_event event.slug %}';"  class="block event">
 	<p>
 		Title : {{event.title}} 
-		(
-			{% if event.parent_recurence.count %}
-			!
-			{% else %}
-			*
-			{% endif %}
-		)
-		
-		
+		{% if event.is_recurrence %}(!)
+		{% else %}
+			{% if event.is_base_event %}(*){% endif %}
+		{% endif %}
 		<a style="float: right;" href="{% url myagenda_del_event event.slug%}">del</a>
 	</p>
 		{% if event.description %}

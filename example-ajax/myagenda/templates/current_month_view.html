@@ -46,7 +46,11 @@ $(document).ready(function() {
 	
 });
 </script>
-
+<style>
+li {
+	display: inline;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -76,10 +80,10 @@ $(document).ready(function() {
 	{% endwith %}
 {% else %}
 	{% if month_events %}
-		<p>
-			* base event <br/>
-			! recurrence
-		</p>
+		<ul>
+		 <li>* base event, </li>
+		 <li>! recurrence</li>
+		</ul>
 		{% for event in month_events %}
 			{% include "event.html" %}
 		{% endfor %}

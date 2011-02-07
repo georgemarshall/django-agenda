@@ -12,10 +12,18 @@ p {
 	margin-bottom: 5px;
 }
 
-div.block p {
+.block p {
 	font-size: 12px;
 }
 
 .event:hover {
 	cursor: pointer;
+}
+
+ul {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	padding-left: 10px;
+	list-style: none;
+	font-size: 12px;	
 }
