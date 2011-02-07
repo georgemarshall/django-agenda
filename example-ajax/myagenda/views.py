@@ -71,5 +71,27 @@ def create_event(request):
                                'has_recurrence' : has_recurrence},
                                context_instance=RequestContext(request))
     
-def del_event(request):
-    pass
+def del_event(request, slug):
+    event = MyEvent.objects.get(slug=slug)
+    if request.method == "POST":
+        if event.is_base_event:
+            del_recurrence = int(request.POST.get('del_recurrence', "1"))
+            if del_recurrence == 1:
+                pass
+            elif del_recurrence == 2:
+                pass
+            else :
+                pass
+        elif event.is_recurrence:
+            del_base_event = int(request.POST.get('del_base_event', "1"))
+            if del_base_event == 1:
+                pass
+            else :
+               pass 
+        else:
+            event.delete()
+        return HttpResponseRedirect(reverse('myagenda_current_month_view'))
+    return render_to_response("delevent_form.html",
+                              {'event': event},
+                               context_instance=RequestContext(request))    
+    
