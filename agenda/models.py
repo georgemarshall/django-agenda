@@ -116,6 +116,18 @@ class Event(AbstractEvent):
     def duration(self):
         return self.end_datetime - self.start_datetime
     
+    @property
+    def is_base_event(self):
+        if hasattr(self, "base_recurence"):
+            return self.base_recurence != None
+        return False
+    
+    @property
+    def is_recurrence(self):
+        if hasattr(self, "parent_recurence"):
+            return self.parent_recurence.count() > 0
+        return False
+    
 # ping_google can be called by a signal
 # TODO rewrite ping_google to be callable by a signal (e.g. add kwargs param)
 #post_save.connect(Event, ping_google)
