@@ -75,19 +75,29 @@ def del_event(request, slug):
     event = MyEvent.objects.get(slug=slug)
     if request.method == "POST":
         if event.is_base_event:
+            del_base_event = int(request.POST.get('del_base_event', "1"))
+            if del_base_event == 1:
+                #delete this event and make the first recurrence the new base event
+                recurrence = event.recurrence.all()[0]
+                first_occur = recurrence.recurrent_events.all().order_by('begin_date','start_time')[0]
+                recurrence.recurrent_events.remove(first_occur)
+                if recurrence.recurrent_events.count() == 0:
+                    recurrence.delete()
+                else:
+                    recurrence.base_event = first_occur
+                    recurrence.save()
+                event.delete()
+            else:
+                #delete this event and all the recurrences
+                pass 
+        elif event.is_recurrence:
             del_recurrence = int(request.POST.get('del_recurrence', "1"))
             if del_recurrence == 1:
                 pass
             elif del_recurrence == 2:
                 pass
-            else :
+            else:
                 pass
-        elif event.is_recurrence:
-            del_base_event = int(request.POST.get('del_base_event', "1"))
-            if del_base_event == 1:
-                pass
-            else :
-               pass 
         else:
             event.delete()
         return HttpResponseRedirect(reverse('myagenda_current_month_view'))
