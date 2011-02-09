@@ -74,16 +74,16 @@ li {
 <a href="{% url myagenda_create_event %}" >New event</a>
 <a style="float: right;" href="{% url myagenda_current_month_view %}" >All events</a>
 </p>
+	<ul>
+		<li>* base event, </li>
+		<li>! recurrence</li>
+	</ul>
 {% if current_event %}
 	{% with current_event as event%}
 		{% include "event.html" %}
 	{% endwith %}
 {% else %}
 	{% if month_events %}
-		<ul>
-		 <li>* base event, </li>
-		 <li>! recurrence</li>
-		</ul>
 		{% for event in month_events %}
 			{% include "event.html" %}
 		{% endfor %}
