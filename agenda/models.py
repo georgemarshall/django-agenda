@@ -119,7 +119,7 @@ class Event(AbstractEvent):
     @property
     def is_base_event(self):
         if hasattr(self, "recurrence"):
-            return self.recurrence != None
+            return self.recurrence.count() > 0
         return False
     
     @property
@@ -160,7 +160,7 @@ class Recurrence(models.Model):
         This model is used when a event is created and that this event is recurrent.
         It wraps the dateutil.rrule params (http://labix.org/python-dateutil)
     """
-    base_event = models.OneToOneField(Event, verbose_name=_('event'), related_name='recurrence')
+    base_event = models.ForeignKey(Event, verbose_name=_('base event'), related_name='recurrence')
     recurrent_events = models.ManyToManyField(Event, verbose_name=_('recurrent events'), related_name='parent_recurrence')
     
     frequency = models.SmallIntegerField(_('frequency'), choices=FREQUENCY_CHOICES)
