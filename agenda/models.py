@@ -118,14 +118,14 @@ class Event(AbstractEvent):
     
     @property
     def is_base_event(self):
-        if hasattr(self, "base_recurence"):
-            return self.base_recurence != None
+        if hasattr(self, "recurrence"):
+            return self.recurrence != None
         return False
     
     @property
     def is_recurrence(self):
-        if hasattr(self, "parent_recurence"):
-            return self.parent_recurence.count() > 0
+        if hasattr(self, "parent_recurrence"):
+            return self.parent_recurrence.count() > 0
         return False
     
 # ping_google can be called by a signal
@@ -160,8 +160,8 @@ class Recurrence(models.Model):
         This model is used when a event is created and that this event is recurrent.
         It wraps the dateutil.rrule params (http://labix.org/python-dateutil)
     """
-    base_event = models.OneToOneField(Event, verbose_name=_('event'), related_name='base_recurence')
-    recurrent_events = models.ManyToManyField(Event, verbose_name=_('recurrent events'), related_name='parent_recurence')
+    base_event = models.OneToOneField(Event, verbose_name=_('event'), related_name='recurrence')
+    recurrent_events = models.ManyToManyField(Event, verbose_name=_('recurrent events'), related_name='parent_recurrence')
     
     frequency = models.SmallIntegerField(_('frequency'), choices=FREQUENCY_CHOICES)
     
