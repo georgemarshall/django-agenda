@@ -94,9 +94,9 @@ class Event(AbstractEvent):
                          editable=True)
 
     #Relative to begin_date
-    start_time = models.TimeField(_('start time'), blank=True, null=True)
+    start_time = models.TimeField(_('start time'), default=time(12), blank=True, null=True)
     #Relative to end_date
-    end_time = models.TimeField(_('end time'), blank=True, null=True)
+    end_time = models.TimeField(_('end time'), default=time(12), blank=True, null=True)
 
     description = models.TextField(_('description'), blank=True, null=True)
 
