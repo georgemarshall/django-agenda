@@ -1,15 +1,13 @@
-from django import template
-
-from calendar import Calendar
 import datetime
-
+import logging
 import re
+from calendar import Calendar
+
+from django import template
 
 register = template.Library()
 
-import logging 
-
-@register.tag(name="get_calendar")
+@register.tag(name='get_calendar')
 def do_calendar(parser, token):
     syntax_help = "syntax should be \"get_calendar for <month> <year> as <var_name>\""
     # This version uses a regular expression to parse tag contents.
@@ -21,7 +19,7 @@ def do_calendar(parser, token):
     m = re.search(r'for (.*?) (.*?) as (\w+)', arg)
     if not m:
         raise template.TemplateSyntaxError, "%r tag had invalid arguments, %s" % (tag_name, syntax_help)
-    
+
     return GetCalendarNode(*m.groups())
 
 class GetCalendarNode(template.Node):
@@ -29,17 +27,17 @@ class GetCalendarNode(template.Node):
         self.year = template.Variable(year)
         self.month = template.Variable(month)
         self.var_name = var_name
-        
+
     def render(self, context):
         mycal = Calendar()
         context[self.var_name] = mycal.monthdatescalendar(int(self.year.resolve(context)), int(self.month.resolve(context)))
-        
+
         return ''
-        
+
 class IfInNode(template.Node):
-    '''
+    """
     Like {% if %} but checks for the first value being in the second value (if a list). Does not work if the second value is not a list.
-    '''
+    """
     def __init__(self, var1, var2, nodelist_true, nodelist_false, negate):
         self.var1, self.var2 = var1, var2
         self.nodelist_true, self.nodelist_false = nodelist_true, nodelist_false
