@@ -5,7 +5,14 @@ from calendar import Calendar
 
 from django import template
 
+from ..models import Calendar, Event
+
 register = template.Library()
+
+@register.inclusion_tag('agenda/tags/event_list.html')
+def upcoming_events():
+    events = Event.published.filter(begin_date__gte=datetime.datetime.now()).reverse()[:10]
+    return {'event_list': events}
 
 @register.tag(name='get_calendar')
 def do_calendar(parser, token):
